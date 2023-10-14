@@ -1,52 +1,48 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import './App.css';
 
-class App extends Component {
-  constructor() {
-    super();
-    this.state = {
-      birthDate: '',
-      age: null,
-    };
-  }
+function App() {
+  const [birthdate, setBirthdate] = useState('');
+  const [age, setAge] = useState(null);
 
-  handleBirthDateChange = (event) => {
-    this.setState({ birthDate: event.target.value });
-  };
-
-  calculateAge = () => {
-    const birthDate = this.state.birthDate;
-    if (birthDate) {
+  const calculateAge = () => {
+    if (birthdate) {
       const today = new Date();
-      const birthDateArr = birthDate.split('-');
-      const birthYear = parseInt(birthDateArr[2], 10);
-      const birthMonth = parseInt(birthDateArr[1], 10) - 1;
-      const birthDay = parseInt(birthDateArr[0], 10);
-
-      const birthDateObj = new Date(birthYear, birthMonth, birthDay);
-      const ageInMilliseconds = today - birthDateObj;
-      const ageInYears = Math.floor(ageInMilliseconds / 31536000000); // Approximate milliseconds in a year
-      this.setState({ age: ageInYears });
+      const birthDate = new Date(birthdate);
+      const ageDiff = today - birthDate;
+      const ageDate = new Date(ageDiff);
+      const calculatedAge = Math.abs(ageDate.getUTCFullYear() - 1970);
+      setAge(calculatedAge);
+    } else {
+      alert('Please enter your date of birth');
     }
   };
 
-  render() {
-    return (
-      <div className="App">
+  return (
+    <div>
+      <center>
         <h1>Age Calculator</h1>
-        <label>Enter Your Date of Birth in dd-mm-yyyy:</label>
+        <h3>Enter your date of birth</h3>
         <input
-          type="text"
-          value={this.state.birthDate}
-          onChange={this.handleBirthDateChange}
+          type="date"
+          value={birthdate}
+          onChange={(e) => setBirthdate(e.target.value)}
         />
-        <button onClick={this.calculateAge}>Calculate Age</button>
-        {this.state.age !== null && (
-          <p>You are {this.state.age} years old.</p>
+        <br />
+        <button
+          style={{ backgroundColor: 'blue', color: 'white' }}
+          onClick={calculateAge}
+        >
+          Calculate Age
+        </button>
+        {age !== null && (
+          <p>
+            <strong>Your age is {age} years old.</strong>
+          </p>
         )}
-      </div>
-    );
-  }
+      </center>
+    </div>
+  );
 }
 
 export default App;
